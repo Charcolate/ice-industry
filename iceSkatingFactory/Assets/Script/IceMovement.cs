@@ -36,45 +36,65 @@ public class IceMovement : MonoBehaviour
     
     void FixedUpdate()
     {
-        ApplyMovement();
-        ApplyDrift();
+    ApplyMovement();
+    ApplyDrift();
+    
+    // 锁定 Y 轴
+    Vector3 vel = rb.linearVelocity;
+    vel.y = 0;
+    rb.linearVelocity = vel;
+    
+    Vector3 pos = transform.position;
+    pos.y = 0f;
+    transform.position = pos;
+    
     }
     
     void ApplyMovement()
     {
-        ThirdPersonCamera cam = Camera.main.GetComponent<ThirdPersonCamera>();
-        if (cam == null) return;
+    ThirdPersonCamera cam = Camera.main.GetComponent<ThirdPersonCamera>();
+    if (cam == null) return;
+    
+    Vector3 camForward = cam.GetCameraForward();
+    Vector3 camRight = cam.GetCameraRight();
+    
+    Vector3 relativeInput = (camForward * moveInput.y + camRight * moveInput.x);
+    
+    if (relativeInput.magnitude > 0.1f)
+    {
+        rb.AddForce(relativeInput * acceleration, ForceMode.Acceleration);
         
-        Vector3 camForward = cam.GetCameraForward();
-        Vector3 camRight = cam.GetCameraRight();
-        
-        Vector3 relativeInput = (camForward * moveInput.y + camRight * moveInput.x);
-        
-        if (relativeInput.magnitude > 0.1f)
+        // 有输入时，角色面向移动方向
+        if (rb.linearVelocity.magnitude > 0.5f)
         {
-            rb.AddForce(relativeInput * acceleration, ForceMode.Acceleration);
-            
-            if (rb.linearVelocity.magnitude > 0.5f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(rb.linearVelocity.normalized, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime);
-            }
+            Quaternion targetRotation = Quaternion.LookRotation(rb.linearVelocity.normalized, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime);
         }
-        else
-        {
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, friction * Time.fixedDeltaTime);
-        }
-        
-        if (rb.linearVelocity.magnitude > maxSpeed)
-        {
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
-        }
+    }
+    else
+    {
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, friction * Time.fixedDeltaTime);
+        // 无输入时不强制旋转，保持当前朝向
+    }
+    
+    if (rb.linearVelocity.magnitude > maxSpeed)
+    {
+        rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+    }
     }
     
     void ApplyDrift()
     {
-        Vector3 localVel = transform.InverseTransformDirection(rb.linearVelocity);
-        localVel.x *= driftFactor;
-        rb.linearVelocity = transform.TransformDirection(localVel);
+    // 简单打滑：侧向速度保留更多，但不影响旋转
+    Vector3 forward = rb.linearVelocity.normalized;
+    Vector3 right = Vector3.Cross(Vector3.up, forward);
+    
+    float forwardSpeed = Vector3.Dot(rb.linearVelocity, forward);
+    float rightSpeed = Vector3.Dot(rb.linearVelocity, right);
+    
+    // 侧向速度保留更多（打滑感）
+    rightSpeed *= driftFactor;
+    
+    rb.linearVelocity = forward * forwardSpeed + right * rightSpeed;
     }
 }
