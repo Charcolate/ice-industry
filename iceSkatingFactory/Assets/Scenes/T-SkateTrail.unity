@@ -384,6 +384,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c847c98f6dde986459d237cfa45a996c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceTrailManager
+<<<<<<< HEAD
+=======
+  pointSpacing: 0.5
+  trailLifetime: 7
+  trailWidth: 0.08
+  trailColor: {r: 0.7, g: 0.9, b: 1, a: 0.6}
+>>>>>>> skatingTracking
 --- !u!54 &475656713
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -423,6 +430,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d526189ce73def94d950fd47fb2ef066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IceParticles
+<<<<<<< HEAD
+=======
+  iceDust: {fileID: 1314774674}
+>>>>>>> skatingTracking
 --- !u!1 &511941458
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,7 +561,11 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
+<<<<<<< HEAD
   m_IsActive: 1
+=======
+  m_IsActive: 0
+>>>>>>> skatingTracking
 --- !u!4 &528959447
 Transform:
   m_ObjectHideFlags: 0
