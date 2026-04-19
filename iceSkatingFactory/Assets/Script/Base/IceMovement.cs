@@ -47,7 +47,6 @@ public class IceMovement : MonoBehaviour
     Vector3 pos = transform.position;
     pos.y = 0f;
     transform.position = pos;
-    
     }
     
     void ApplyMovement()

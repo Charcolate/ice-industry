@@ -168,7 +168,7 @@ public class IceTrailManager : MonoBehaviour
         for (int i = 0; i < currentTrail.Count; i++)
         {
             // 让轨迹稍微抬高一点，避免和冰面重叠闪烁
-            Vector3 pos = currentTrail[i].position + Vector3.up * 0.02f;
+            Vector3 pos = currentTrail[i].position + Vector3.up * 0.5f;
             currentLineRenderer.SetPosition(i, pos);
         }
     }
