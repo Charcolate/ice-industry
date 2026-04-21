@@ -20,6 +20,8 @@ public class StampControl : MonoBehaviour
     public float backDuration = 1.5f;        // 后退时长
     public float holdDuration = 1.0f;        // 停留时长
     public float returnDuration = 1.5f;      // 归位时长
+    public float jumpHeight = 0.5f;          // 跳高度
+    public float jumpPeakTime = 0.3f;        // 跳时长
 
     [Header("事件")]
     public UnityEvent<int, int> OnStamp;     // (形状索引, 蓄力等级)
@@ -29,8 +31,16 @@ public class StampControl : MonoBehaviour
     private int currentPowerLevel = 0;
     private bool isRecoiling = false;        // 是否正在后坐力中
 
+    [Header("摄像机")]
+    public ThirdPersonCamera cam;  
+
     private Mouse mouse;
     private Vector3 originalPosition;
+
+    // ========== 公共属性 ==========
+    public int GetCurrentShapeIndex() => currentShapeIndex;
+    public int GetCurrentPowerLevel() => currentPowerLevel;
+    public bool IsRecoiling() => isRecoiling;
 
     void Start()
     {
@@ -161,23 +171,43 @@ public class StampControl : MonoBehaviour
     }
 
     IEnumerator RecoilRoutine(float distance)
-{
+    {
     isRecoiling = true;
+    if (cam != null) cam.SetSmoothing(false);
+
     Vector3 startPos = transform.position;
     Vector3 backPos = startPos - transform.forward * distance;
 
-    // 后退
+    // 安全钳：确保弹跳峰值时间不超过后退时长
+    float peak = Mathf.Clamp(jumpPeakTime, 0.05f, backDuration - 0.05f);
+    float jumpHeightSafe = Mathf.Max(0f, jumpHeight);
+
     float elapsed = 0f;
     while (elapsed < backDuration)
     {
         elapsed += Time.deltaTime;
-        float t = elapsed / backDuration;
-        transform.position = Vector3.Lerp(startPos, backPos, t);
+        float t = Mathf.Clamp01(elapsed / backDuration);
+        Vector3 horizontalPos = Vector3.Lerp(startPos, backPos, t);
+
+        float verticalOffset = 0f;
+        if (elapsed <= peak)
+        {
+            float upT = elapsed / peak;
+            verticalOffset = Mathf.Sin(upT * Mathf.PI * 0.5f) * jumpHeightSafe;
+        }
+        else
+        {
+            float downT = (elapsed - peak) / (backDuration - peak);
+            verticalOffset = Mathf.Cos(downT * Mathf.PI * 0.5f) * jumpHeightSafe;
+        }
+
+        transform.position = horizontalPos + Vector3.up * verticalOffset;
         yield return null;
     }
+
+    // 确保最终位置准确
     transform.position = backPos;
 
-    // 停留
     yield return new WaitForSeconds(holdDuration);
 
     // 归位
@@ -192,11 +222,7 @@ public class StampControl : MonoBehaviour
     }
     transform.position = startPos;
 
+    if (cam != null) cam.SetSmoothing(true);
     isRecoiling = false;
-}
-
-    // ========== 公共属性 ==========
-    public int GetCurrentShapeIndex() => currentShapeIndex;
-    public int GetCurrentPowerLevel() => currentPowerLevel;
-    public bool IsRecoiling() => isRecoiling;
-}
+    }
+    }
