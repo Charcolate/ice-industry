@@ -36,6 +36,7 @@ public class StampControl : MonoBehaviour
 
     private Mouse mouse;
     private Vector3 originalPosition;
+    private CounterAttackController counterAttack;
 
     // ========== 公共属性 ==========
     public int GetCurrentShapeIndex() => currentShapeIndex;
@@ -44,6 +45,8 @@ public class StampControl : MonoBehaviour
 
     void Start()
     {
+        counterAttack = GetComponent<CounterAttackController>();
+
         mouse = Mouse.current;
         if (mouse == null) Debug.LogError("未检测到鼠标设备！");
 
@@ -56,6 +59,8 @@ public class StampControl : MonoBehaviour
     {
         if (mouse == null) return;
         if (isRecoiling) return; // 后坐力期间禁止操作
+        if (counterAttack != null && counterAttack.IsRecoiling()) return;   // 攻击后坐力期间禁止操作
+
 
         // 滚轮切换形状
         float scroll = mouse.scroll.ReadValue().y;
