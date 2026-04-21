@@ -15,6 +15,7 @@ public class StampControl : MonoBehaviour
     public Color[] indicatorColors = { Color.white, Color.blue, Color.red };
 
     [Header("后坐力设置")]
+    public float[] recoilDistances = { 2f, 3.5f, 5f };  // 1级、2级、3级对应的后退距离
     public float recoilDistance = 3f;        // 后退距离
     public float backDuration = 1.5f;        // 后退时长
     public float holdDuration = 1.0f;        // 停留时长
@@ -148,51 +149,51 @@ public class StampControl : MonoBehaviour
         isCharging = false;
         int finalLevel = currentPowerLevel > 0 ? currentPowerLevel : 1;
 
-        // 触发信件生成事件
         OnStamp?.Invoke(currentShapeIndex, finalLevel);
 
         pressTimer = 0f;
         currentPowerLevel = 0;
         TurnOffAllLights();
 
-        // 启动后坐力协程
-        StartCoroutine(RecoilRoutine());
+        // 根据蓄力等级获取后退距离
+        float distance = recoilDistances[finalLevel - 1];
+        StartCoroutine(RecoilRoutine(distance));
     }
 
-    IEnumerator RecoilRoutine()
+    IEnumerator RecoilRoutine(float distance)
+{
+    isRecoiling = true;
+    Vector3 startPos = transform.position;
+    Vector3 backPos = startPos - transform.forward * distance;
+
+    // 后退
+    float elapsed = 0f;
+    while (elapsed < backDuration)
     {
-        isRecoiling = true;
-        Vector3 startPos = transform.position;
-        Vector3 backPos = startPos - transform.forward * recoilDistance;
-
-        // 阶段1：后退
-        float elapsed = 0f;
-        while (elapsed < backDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / backDuration;
-            transform.position = Vector3.Lerp(startPos, backPos, t);
-            yield return null;
-        }
-        transform.position = backPos;
-
-        // 阶段2：停留（此时可观察冰墙信息）
-        yield return new WaitForSeconds(holdDuration);
-
-        // 阶段3：归位
-        elapsed = 0f;
-        Vector3 currentPos = transform.position;
-        while (elapsed < returnDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / returnDuration;
-            transform.position = Vector3.Lerp(currentPos, startPos, t);
-            yield return null;
-        }
-        transform.position = startPos;
-
-        isRecoiling = false;
+        elapsed += Time.deltaTime;
+        float t = elapsed / backDuration;
+        transform.position = Vector3.Lerp(startPos, backPos, t);
+        yield return null;
     }
+    transform.position = backPos;
+
+    // 停留
+    yield return new WaitForSeconds(holdDuration);
+
+    // 归位
+    elapsed = 0f;
+    Vector3 currentPos = transform.position;
+    while (elapsed < returnDuration)
+    {
+        elapsed += Time.deltaTime;
+        float t = elapsed / returnDuration;
+        transform.position = Vector3.Lerp(currentPos, startPos, t);
+        yield return null;
+    }
+    transform.position = startPos;
+
+    isRecoiling = false;
+}
 
     // ========== 公共属性 ==========
     public int GetCurrentShapeIndex() => currentShapeIndex;
