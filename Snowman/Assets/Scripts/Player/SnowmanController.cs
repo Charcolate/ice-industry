@@ -432,7 +432,7 @@ public class SnowmanController : MonoBehaviour
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         if (enemies.Length == 0)
         {
-            EnemyTurret[] turrets = FindObjectsByType<EnemyTurret>(FindObjectsSortMode.None);
+            EnemyTurret[] turrets = Object.FindObjectsByType<EnemyTurret>(FindObjectsInactive.Exclude);
             enemies = turrets.Select(t => t.gameObject).ToArray();
         }
 
