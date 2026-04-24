@@ -209,3 +209,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ReflectBullet
   speed: 20
   lifetime: 10
+  hitRadius: 0.5
