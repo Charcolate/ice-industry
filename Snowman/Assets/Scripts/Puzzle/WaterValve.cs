@@ -9,22 +9,20 @@ public class WaterValve : MonoBehaviour
     
     [Header("视觉")]
     [SerializeField] private Transform valveWheel;
+    [SerializeField] private Renderer wheelRenderer;             // 直接引用轮盘 Renderer
+    [SerializeField] private Material wheelActiveMaterial;       // 开启时材质
+    [SerializeField] private Material wheelInactiveMaterial;     // 关闭时材质
     [SerializeField] private float wheelRotationAmount = 720f;
-    [SerializeField] private Material activeMaterial;         // 开启时材质（水流）
-    [SerializeField] private Material inactiveMaterial;       // 关闭时材质（无水）
     
     [Header("UI 提示")]
     [SerializeField] private GameObject interactPrompt;
-    [SerializeField] private string closeText = "Press E to close valve";
-    [SerializeField] private string openText = "Press E to open valve";
     
     [Header("关联水流")]
-    [SerializeField] private WaterFlow[] waterFlows;          // 这个水阀控制的所有水流
+    [SerializeField] private WaterFlow[] waterFlows;
     
     private bool isClosed = false;
     private bool isTurning = false;
     private Transform player;
-    private Renderer rend;
     private TMPro.TextMeshProUGUI promptText;
     
     public bool IsClosed => isClosed;
@@ -32,7 +30,6 @@ public class WaterValve : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
-        rend = GetComponent<Renderer>();
         
         if (interactPrompt != null)
         {
@@ -41,10 +38,7 @@ public class WaterValve : MonoBehaviour
         }
         
         // 初始状态：开启
-        if (activeMaterial != null && rend != null)
-            rend.material = activeMaterial;
-        
-        UpdateWaterFlows();
+        UpdateWheelVisual();
     }
     
     void Update()
@@ -59,7 +53,7 @@ public class WaterValve : MonoBehaviour
             interactPrompt.SetActive(inRange);
             if (inRange && promptText != null)
             {
-                promptText.text = isClosed ? openText : closeText;
+                promptText.text = isClosed ? "Press E to open valve" : "Press E to close valve";
             }
         }
         
@@ -81,7 +75,7 @@ public class WaterValve : MonoBehaviour
         {
             float elapsed = 0f;
             Quaternion startRotation = valveWheel.localRotation;
-            float direction = isClosed ? -1f : 1f;  // 关时正转，开时反转
+            float direction = isClosed ? -1f : 1f;
             Quaternion targetRotation = startRotation * Quaternion.Euler(wheelRotationAmount * direction, 0, 0);
             
             while (elapsed < turnAnimationTime)
@@ -100,11 +94,8 @@ public class WaterValve : MonoBehaviour
         // 切换状态
         isClosed = !isClosed;
         
-        // 更换材质
-        if (rend != null)
-        {
-            rend.material = isClosed ? inactiveMaterial : activeMaterial;
-        }
+        // 更新轮盘材质
+        UpdateWheelVisual();
         
         // 更新水流
         UpdateWaterFlows();
@@ -112,6 +103,14 @@ public class WaterValve : MonoBehaviour
         isTurning = false;
         
         Debug.Log($"[WaterValve] 水阀已{(isClosed ? "关闭" : "开启")}");
+    }
+    
+    void UpdateWheelVisual()
+    {
+        if (wheelRenderer != null)
+        {
+            wheelRenderer.material = isClosed ? wheelInactiveMaterial : wheelActiveMaterial;
+        }
     }
     
     void UpdateWaterFlows()
@@ -132,7 +131,6 @@ public class WaterValve : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, interactRange);
         
-        // 画线连接到水流
         if (waterFlows != null)
         {
             Gizmos.color = Color.cyan;

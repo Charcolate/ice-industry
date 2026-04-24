@@ -4,18 +4,19 @@ using System.Collections.Generic;
 public class WaterFlow : MonoBehaviour
 {
     [Header("水流设置")]
-    [SerializeField] private float pushForce = 8f;              // 推力大小
-    [SerializeField] private Vector3 flowDirection = Vector3.down; // 水流方向
+    [SerializeField] private float pushForce = 8f;
+    [SerializeField] private Vector3 flowDirection = Vector3.down;
     
-    [Header("视觉")]
-    [SerializeField] private Material waterMaterial;
+    [Header("视觉 - Renderer")]
+    [SerializeField] private Renderer waterRenderer;        // 水流 Renderer
+    [SerializeField] private Material activeMaterial;       // 水流开启时材质
+    [SerializeField] private Material inactiveMaterial;     // 水流关闭时材质
     [SerializeField] private float scrollSpeed = 1f;
     
     [Header("碰撞体设置")]
     [SerializeField] private Vector3 colliderSize = new Vector3(2f, 3f, 1f);
     [SerializeField] private Vector3 colliderCenter = new Vector3(0, 1.5f, 0);
     
-    private Renderer rend;
     private bool isActive = true;
     private Vector2 textureOffset;
     private BoxCollider waterCollider;
@@ -24,13 +25,14 @@ public class WaterFlow : MonoBehaviour
     
     void Start()
     {
-        rend = GetComponent<Renderer>();
-        if (rend != null && waterMaterial != null)
+        if (waterRenderer == null)
+            waterRenderer = GetComponent<Renderer>();
+        
+        if (waterRenderer != null && activeMaterial != null)
         {
-            rend.material = waterMaterial;
+            waterRenderer.material = activeMaterial;
         }
         
-        // 获取或创建碰撞体（使用 Inspector 中的值）
         waterCollider = GetComponent<BoxCollider>();
         if (waterCollider == null)
         {
@@ -45,17 +47,16 @@ public class WaterFlow : MonoBehaviour
     {
         if (!isActive)
         {
-            // 水流关闭时也要清理
             playersInWater.Clear();
             playersToBlock.Clear();
             return;
         }
         
-        // 水流材质动画
-        if (rend != null && rend.material != null)
+        // 材质动画（仅激活时滚动）
+        if (waterRenderer != null && waterRenderer.material != null)
         {
             textureOffset.y += scrollSpeed * Time.deltaTime;
-            rend.material.SetTextureOffset("_MainTex", textureOffset);
+            waterRenderer.material.SetTextureOffset("_MainTex", textureOffset);
         }
         
         // 持续推力
@@ -73,8 +74,11 @@ public class WaterFlow : MonoBehaviour
     {
         isActive = active;
         
-        if (rend != null)
-            rend.enabled = active;
+        // 切换材质
+        if (waterRenderer != null)
+        {
+            waterRenderer.material = active ? activeMaterial : inactiveMaterial;
+        }
         
         if (waterCollider != null)
             waterCollider.enabled = active;
@@ -97,27 +101,14 @@ public class WaterFlow : MonoBehaviour
             SnowmanController player = other.GetComponent<SnowmanController>();
             CharacterController cc = other.GetComponent<CharacterController>();
             
-            if (player != null)
+            if (player != null && player.CurrentForm == SnowmanController.SnowmanForm.Powder)
             {
-                // 粉雪碰到水 → 变成冰
-                if (player.CurrentForm == SnowmanController.SnowmanForm.Powder)
-                {
-                    player.OnHitByWater();
-                    playersToBlock.Add(player);
-                    Debug.Log("[WaterFlow] 粉雪碰到水，变成蓝冰");
-                }
-                // 水形态 → 推力
-                else if (player.CurrentForm == SnowmanController.SnowmanForm.Water && cc != null)
-                {
-                    playersInWater.Add(cc);
-                    Debug.Log("[WaterFlow] 水形态进入水流");
-                }
-                // 蓝冰 → 推力
-                else if (player.CurrentForm == SnowmanController.SnowmanForm.Ice && cc != null)
-                {
-                    playersInWater.Add(cc);
-                    Debug.Log("[WaterFlow] 蓝冰进入水流");
-                }
+                player.OnHitByWater();
+                playersToBlock.Add(player);
+            }
+            else if (cc != null)
+            {
+                playersInWater.Add(cc);
             }
         }
     }
@@ -132,7 +123,6 @@ public class WaterFlow : MonoBehaviour
             
             if (player != null && player.CurrentForm == SnowmanController.SnowmanForm.Powder)
             {
-                // 粉雪持续在水中 → 阻止
                 if (!playersToBlock.Contains(player))
                 {
                     player.OnHitByWater();
@@ -157,19 +147,13 @@ public class WaterFlow : MonoBehaviour
         }
     }
     
-    // 在 Scene 视图中显示碰撞体范围
     void OnDrawGizmos()
     {
-        Gizmos.color = new Color(0.3f, 0.7f, 1f, 0.3f);
+        Gizmos.color = isActive ? new Color(0.3f, 0.7f, 1f, 0.3f) : new Color(0.5f, 0.5f, 0.5f, 0.2f);
         
         Matrix4x4 oldMatrix = Gizmos.matrix;
         Gizmos.matrix = transform.localToWorldMatrix;
         Gizmos.DrawCube(colliderCenter, colliderSize);
         Gizmos.matrix = oldMatrix;
-        
-        // 画水流方向箭头
-        Gizmos.color = Color.cyan;
-        Vector3 worldFlowDir = transform.TransformDirection(flowDirection);
-        Gizmos.DrawRay(transform.position + colliderCenter, worldFlowDir * 2f);
     }
 }
