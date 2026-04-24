@@ -51,6 +51,9 @@ public class SnowmanController : MonoBehaviour
     [SerializeField] private Material iceMaterial;
     [SerializeField] private Material waterMaterial;
 
+    [Header("重生")]
+    [SerializeField] private PlayerRespawnManager respawnManager;
+
     public enum SnowmanForm { Powder, Ice, Water }
     private SnowmanForm currentForm = SnowmanForm.Powder;
     private SnowmanForm pendingForm = SnowmanForm.Powder;
@@ -216,6 +219,7 @@ public class SnowmanController : MonoBehaviour
         UpdateFormVisualWithBottomAlignment();
     }
 
+    // ===== 缺少的方法：HandleWaterTimer =====
     private void HandleWaterTimer()
     {
         if (!isWaterFormActive) return;
@@ -231,6 +235,10 @@ public class SnowmanController : MonoBehaviour
     {
         Debug.Log("水形态超时，永远冻住 - 游戏失败");
         enabled = false;
+        
+        // 通知重生管理器
+        if (respawnManager == null)
+            respawnManager = GetComponent<PlayerRespawnManager>();
     }
 
     private void HandleMovementAndGravity()
@@ -432,7 +440,7 @@ public class SnowmanController : MonoBehaviour
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         if (enemies.Length == 0)
         {
-            EnemyTurret[] turrets = Object.FindObjectsByType<EnemyTurret>(FindObjectsInactive.Exclude);
+            EnemyTurret[] turrets = FindObjectsByType<EnemyTurret>();
             enemies = turrets.Select(t => t.gameObject).ToArray();
         }
 
@@ -477,7 +485,6 @@ public class SnowmanController : MonoBehaviour
         return false;
     }
 
-    // 获取当前瞄准线瞄准的敌人
     private GameObject GetAimedEnemy()
     {
         float bodyHeight = 0.6f;
@@ -492,13 +499,11 @@ public class SnowmanController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(startPoint, aimDirection, out hit, maxAimDistance))
         {
-            // 检查是否击中敌人
             if (hit.collider.CompareTag("Enemy") || hit.collider.GetComponent<EnemyTurret>() != null)
             {
                 return hit.collider.gameObject;
             }
 
-            // 检查父物体
             if (hit.collider.transform.parent != null)
             {
                 Transform parent = hit.collider.transform.parent;
@@ -528,24 +533,23 @@ public class SnowmanController : MonoBehaviour
     }
 
     public void SpawnReflectBullet(Vector3 spawnPosition)
-{
-    if (reflectBulletPrefab == null) return;
-
-    if (Time.time - lastReflectTime < 0.1f) return;
-    lastReflectTime = Time.time;
-
-    float bodyHeight = 0.6f;
-    Vector3 startPoint = transform.position + Vector3.up * bodyHeight;
-    Vector3 aimDirection = GetHorizontalAimDirection();
-
-    GameObject bullet = Instantiate(reflectBulletPrefab, spawnPosition, Quaternion.LookRotation(aimDirection));
-    ReflectBullet rb = bullet.GetComponent<ReflectBullet>();
-    if (rb != null)
     {
-        rb.SetDirection(aimDirection, reflectBulletSpeed, this);
-    }
-}
+        if (reflectBulletPrefab == null) return;
 
+        if (Time.time - lastReflectTime < 0.1f) return;
+        lastReflectTime = Time.time;
+
+        float bodyHeight = 0.6f;
+        Vector3 startPoint = transform.position + Vector3.up * bodyHeight;
+        Vector3 aimDirection = GetHorizontalAimDirection();
+
+        GameObject bullet = Instantiate(reflectBulletPrefab, spawnPosition, Quaternion.LookRotation(aimDirection));
+        ReflectBullet rb = bullet.GetComponent<ReflectBullet>();
+        if (rb != null)
+        {
+            rb.SetDirection(aimDirection, reflectBulletSpeed, this);
+        }
+    }
 
     public void AddFrostStack()
     {
@@ -570,6 +574,9 @@ public class SnowmanController : MonoBehaviour
     {
         Debug.Log("被完全冻住 - 游戏失败");
         enabled = false;
+        
+        if (respawnManager == null)
+            respawnManager = GetComponent<PlayerRespawnManager>();
     }
 
     public void OnReflectHit()
