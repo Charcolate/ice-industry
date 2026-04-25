@@ -33,19 +33,17 @@ public class ThirdPersonCamera : MonoBehaviour
     private float scrollInput;
     
     void Start()
-    {
-        currentDistance = distance;
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-    }
+{
+    currentDistance = distance;
+}
+
+void LateUpdate()
+{
+    if (target == null) return;
     
-    void LateUpdate()
-    {
-        if (target == null) return;
-        
-        HandleInput();
-        UpdateCameraPosition();
-    }
+    HandleInput();
+    UpdateCameraPosition();
+}
     
     void HandleInput()
     {

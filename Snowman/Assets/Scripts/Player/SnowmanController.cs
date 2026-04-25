@@ -111,27 +111,27 @@ public class SnowmanController : MonoBehaviour
         if (cameraController != null && cameraController.target == null)
             cameraController.target = transform;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
         UpdateFormVisual();
     }
 
     private void Update()
+{
+    // 只在游戏正常运行且玩家 enabled 时隐藏光标
+    if (Time.timeScale > 0 && enabled)
     {
-        // 保持鼠标锁定
-        if (Cursor.lockState != CursorLockMode.Locked)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        HandleInput();
-        HandleFormSwitch();
-        HandleMovementAndGravity();
-        HandleWaterTimer();
-        UpdateAimLine();
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
+
+    HandleInput();
+    HandleFormSwitch();
+    HandleMovementAndGravity();
+    HandleWaterTimer();
+    UpdateAimLine();
+}
 
     private void HandleInput()
     {

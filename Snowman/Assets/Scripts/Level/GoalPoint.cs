@@ -1,92 +1,80 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GoalPoint : MonoBehaviour
 {
-    [Header("视觉 - Renderer")]
-    [SerializeField] private Renderer goalRenderer;           // 终点 Renderer
-    [SerializeField] private Material idleMaterial;           // 未触碰时材质
-    [SerializeField] private Material completeMaterial;       // 触碰后材质
-    
-    [Header("粒子")]
+    [Header("视觉")]
+    [SerializeField] private Renderer goalRenderer;
+    [SerializeField] private Material idleMaterial;
+    [SerializeField] private Material completeMaterial;
     [SerializeField] private ParticleSystem idleParticles;
     [SerializeField] private ParticleSystem completeParticles;
     
     [Header("通关 UI")]
-    [SerializeField] private GameObject levelCompleteUI;
-    [SerializeField] private float uiDelay = 0.5f;
+    [SerializeField] private GameObject levelCompletePanel;
+    [SerializeField] private Button restartButton;
+    [SerializeField] private Button nextLevelButton;
+    [SerializeField] private Button mainMenuButton;
+    
+    [Header("场景")]
+    [SerializeField] private string nextSceneName;
     
     private bool isCompleted = false;
     
     void Start()
     {
-        // 初始材质
-        if (goalRenderer != null && idleMaterial != null)
-        {
-            goalRenderer.material = idleMaterial;
-        }
+        levelCompletePanel.SetActive(false);
+        goalRenderer.material = idleMaterial;
+        if (idleParticles) idleParticles.Play();
         
-        if (levelCompleteUI != null)
-            levelCompleteUI.SetActive(false);
-        
-        if (idleParticles != null)
-            idleParticles.Play();
+        // 绑定按钮
+        restartButton.onClick.AddListener(() => SceneManager.LoadScene(SceneManager.GetActiveScene().name));
+        nextLevelButton.onClick.AddListener(() => {
+            if (!string.IsNullOrEmpty(nextSceneName))
+                SceneManager.LoadScene(nextSceneName);
+        });
+        mainMenuButton.onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
     
     void OnTriggerEnter(Collider other)
     {
         if (isCompleted) return;
-        
         if (other.CompareTag("Player"))
         {
-            CompleteLevel();
-        }
-    }
-    
-    void CompleteLevel()
-    {
-        isCompleted = true;
-        
-        // 切换材质
-        if (goalRenderer != null && completeMaterial != null)
-        {
+            isCompleted = true;
+            
+            // 禁用重生系统，防止自动传送回起点
+            PlayerRespawnManager respawn = other.GetComponent<PlayerRespawnManager>();
+            if (respawn != null)
+                respawn.enabled = false;
+            
+            // 冻结玩家
+            SnowmanController player = other.GetComponent<SnowmanController>();
+            if (player != null)
+                player.enabled = false;
+            
             goalRenderer.material = completeMaterial;
-        }
-        
-        // 粒子
-        if (idleParticles != null)
-            idleParticles.Stop();
-        
-        if (completeParticles != null)
-            completeParticles.Play();
-        
-        // 停止玩家
-        SnowmanController player = FindAnyObjectByType<SnowmanController>();
-        if (player != null)
-        {
-            player.enabled = false;
-        }
-        
-        // 显示通关 UI
-        StartCoroutine(ShowCompleteUI());
-        
-        Debug.Log("[GoalPoint] 关卡完成！");
-    }
-    
-    System.Collections.IEnumerator ShowCompleteUI()
-    {
-        yield return new WaitForSeconds(uiDelay);
-        
-        if (levelCompleteUI != null)
-        {
-            levelCompleteUI.SetActive(true);
+            if (idleParticles) idleParticles.Stop();
+            if (completeParticles) completeParticles.Play();
+            
+            levelCompletePanel.SetActive(true);
+            
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            
+            // 持续强制光标可见
+            StartCoroutine(ForceCursorVisible());
         }
     }
     
-    void OnDrawGizmos()
+    System.Collections.IEnumerator ForceCursorVisible()
     {
-        Gizmos.color = isCompleted ? Color.green : Color.yellow;
-        Gizmos.DrawWireCube(transform.position, new Vector3(1, 2, 1));
+        while (levelCompletePanel.activeSelf)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
     }
 }
