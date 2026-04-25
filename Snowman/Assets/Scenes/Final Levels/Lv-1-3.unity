@@ -132,7 +132,23 @@ PrefabInstance:
       value: GoalPoint
       objectReference: {fileID: 0}
     - target: {fileID: 7181708911698747587, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
+      propertyPath: nextSceneName
+      value: Lv-1-4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7181708911698747587, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
+      propertyPath: restartButton
+      value: 
+      objectReference: {fileID: 937270401}
+    - target: {fileID: 7181708911698747587, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
       propertyPath: levelCompleteUI
+      value: 
+      objectReference: {fileID: 695254832}
+    - target: {fileID: 7181708911698747587, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
+      propertyPath: nextLevelButton
+      value: 
+      objectReference: {fileID: 431271007}
+    - target: {fileID: 7181708911698747587, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
+      propertyPath: levelCompletePanel
       value: 
       objectReference: {fileID: 695254832}
     - target: {fileID: 7457752248320538132, guid: 4d8e03e04bdc04d4a85112d26a774401, type: 3}
@@ -354,6 +370,7 @@ MonoBehaviour:
   playerController: {fileID: 32804092}
   characterController: {fileID: 32804093}
   frostVisualManager: {fileID: 768006037}
+  disableRespawn: 0
 --- !u!1 &85473405
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,10 +554,10 @@ RectTransform:
   - {fileID: 445158695}
   m_Father: {fileID: 1853681141}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -267}
-  m_SizeDelta: {x: -1672.34, y: -723.2}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -436}
+  m_SizeDelta: {x: 247.66003, y: 57.70001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &221541638
 CanvasGroup:
@@ -1088,10 +1105,10 @@ RectTransform:
   - {fileID: 989794431}
   m_Father: {fileID: 1853681141}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 13}
-  m_SizeDelta: {x: -1672.34, y: -723.2}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -145.45001}
+  m_SizeDelta: {x: 247.66003, y: 57.70001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &349032050
 CanvasGroup:
@@ -9664,10 +9681,10 @@ RectTransform:
   - {fileID: 718670801}
   m_Father: {fileID: 1853681141}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -128}
-  m_SizeDelta: {x: -1672.34, y: -723.2}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -289}
+  m_SizeDelta: {x: 247.66003, y: 57.70001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1686145135
 CanvasGroup:

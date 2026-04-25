@@ -69,8 +69,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartPoint
   startRenderer: {fileID: 8803376222963545737}
-  activeMaterial: {fileID: 2100000, guid: 3616c0c2b5f3f304a9e3088df5cec1db, type: 2}
-  activateParticles: {fileID: 5167137416927390642}
+  activeMaterial: {fileID: 2100000, guid: 64862f22a07a008478e036e3d08c4b09, type: 2}
 --- !u!1 &6912144566494862052
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,7 +87,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5699038821389592378
 Transform:
   m_ObjectHideFlags: 0

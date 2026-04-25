@@ -182,12 +182,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GoalPoint
   goalRenderer: {fileID: 8318127104459335379}
-  idleMaterial: {fileID: 2100000, guid: 04446334baee6f4498e757f4231e6f7e, type: 2}
-  completeMaterial: {fileID: 2100000, guid: 3616c0c2b5f3f304a9e3088df5cec1db, type: 2}
+  idleMaterial: {fileID: 2100000, guid: 0476346b93d08b24bb2596460d3c430f, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 80b58b3a2f81ebe49939df7fb4639eaf, type: 2}
   idleParticles: {fileID: 283702996971149813}
   completeParticles: {fileID: 4161227865045905496}
-  levelCompleteUI: {fileID: 0}
-  uiDelay: 0.5
+  levelCompletePanel: {fileID: 0}
+  restartButton: {fileID: 0}
+  nextLevelButton: {fileID: 0}
+  mainMenuButton: {fileID: 0}
+  nextSceneName: 
 --- !u!1 &4199073608624045819
 GameObject:
   m_ObjectHideFlags: 0

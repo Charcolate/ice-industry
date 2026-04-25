@@ -6,8 +6,8 @@ public class StartPoint : MonoBehaviour
     [SerializeField] private Renderer startRenderer;
     [SerializeField] private Material activeMaterial;
     
-    [Header("粒子")]
-    [SerializeField] private ParticleSystem activateParticles;
+    //[Header("粒子")]
+    //[SerializeField] private ParticleSystem activateParticles;
     
     void Start()
     {
@@ -34,7 +34,7 @@ public class StartPoint : MonoBehaviour
             }
         }
         
-        if (activateParticles != null)
-            activateParticles.Play();
+        //if (activateParticles != null)
+            //activateParticles.Play();
     }
 }
