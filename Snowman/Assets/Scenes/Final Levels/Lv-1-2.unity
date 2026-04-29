@@ -2531,10 +2531,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Congratulations! You have completed the level!
+  m_text: "\u606D\u559C\uFF01"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3722,12 +3722,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Restart
-
-'
+  m_text: "\u91CD\u65B0\u8FC7\u5173"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4623,10 +4621,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Level Complete!
+  m_text: "\u6210\u529F\u8FC7\u5173\uFF01"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8342,10 +8340,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Next Level
+  m_text: "\u4E0B\u4E00\u5173"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
