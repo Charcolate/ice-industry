@@ -89,8 +89,7 @@ public class DroneEnemy : MonoBehaviour
         EnemyBullet eb = bullet.GetComponent<EnemyBullet>();
         if (eb != null)
         {
-            eb.SetTarget(targetPos);
-            eb.speed = bulletSpeed;
+            eb.Initialize(targetPos, bulletSpeed);
         }
     }
     

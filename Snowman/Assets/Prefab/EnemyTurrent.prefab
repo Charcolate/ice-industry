@@ -276,7 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTurret
   fireRate: 1.5
   detectionRange: 20
-  bulletSpeed: 8
+  bulletSpeed: 10
   bulletPrefab: {fileID: 2342844184719778591, guid: 007c3580e80451647aa012fb12a5c194, type: 3}
   firePoint: {fileID: 8026396922658682563}
 --- !u!65 &862940649067321852
