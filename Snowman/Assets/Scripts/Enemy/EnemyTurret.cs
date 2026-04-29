@@ -38,17 +38,18 @@ public class EnemyTurret : MonoBehaviour
     }
 
     void Fire()
-    {
-        if (bulletPrefab == null || firePoint == null) return;
+{
+    if (bulletPrefab == null || firePoint == null) return;
 
-        Vector3 targetPos = player.position + Vector3.up * 1f;
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        EnemyBullet eb = bullet.GetComponent<EnemyBullet>();
-        if (eb != null)
-        {
-            eb.Initialize(targetPos, bulletSpeed);
-        }
+    Vector3 targetPos = player.position + Vector3.up * 1f;
+    GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+    EnemyBullet eb = bullet.GetComponent<EnemyBullet>();
+    if (eb != null)
+    {
+        eb.SetTarget(targetPos);
+        eb.speed = bulletSpeed;
     }
+}
 
     void OnDrawGizmosSelected()
     {

@@ -9,6 +9,7 @@ public class ReflectBullet : MonoBehaviour
     private Vector3 moveDirection;
     private SnowmanController playerRef;
     private Vector3 lastPosition;
+    private bool hasHit = false;
 
     void Start()
     {
@@ -26,17 +27,17 @@ public class ReflectBullet : MonoBehaviour
 
     void Update()
     {
+        if (hasHit) return;
+
         lastPosition = transform.position;
         transform.position += moveDirection * speed * Time.deltaTime;
 
-        // 射线检测
-        Vector3 rayDirection = transform.position - lastPosition;
-        float distance = rayDirection.magnitude;
-
-        if (distance > 0.01f)
+        // 射线检测本帧移动路径
+        Vector3 rayDir = transform.position - lastPosition;
+        float distance = rayDir.magnitude;
+        if (distance > 0)
         {
-            RaycastHit[] hits = Physics.RaycastAll(lastPosition, rayDirection.normalized, distance);
-
+            RaycastHit[] hits = Physics.RaycastAll(lastPosition, rayDir.normalized, distance);
             foreach (RaycastHit hit in hits)
             {
                 if (IsEnemy(hit.collider))
@@ -47,7 +48,7 @@ public class ReflectBullet : MonoBehaviour
             }
         }
 
-        // 距离检测
+        // 距离检测所有敌人（保底措施）
         CheckAllEnemies();
     }
 
@@ -57,114 +58,85 @@ public class ReflectBullet : MonoBehaviour
         if (col.GetComponent<DroneEnemy>() != null) return true;
         if (col.GetComponent<PatrolTurret>() != null) return true;
         if (col.CompareTag("Enemy")) return true;
-
+        // 检查父级
         if (col.transform.parent != null)
         {
-            Transform parent = col.transform.parent;
-            if (parent.GetComponent<EnemyTurret>() != null) return true;
-            if (parent.GetComponent<DroneEnemy>() != null) return true;
-            if (parent.GetComponent<PatrolTurret>() != null) return true;
-            if (parent.CompareTag("Enemy")) return true;
+            Transform p = col.transform.parent;
+            if (p.GetComponent<EnemyTurret>() != null) return true;
+            if (p.GetComponent<DroneEnemy>() != null) return true;
+            if (p.GetComponent<PatrolTurret>() != null) return true;
+            if (p.CompareTag("Enemy")) return true;
         }
-
         return false;
     }
 
-    GameObject FindEnemyRoot(Collider col)
+    void DestroyEnemy(Collider col)
     {
-        Transform current = col.transform;
-
-        if (current.GetComponent<EnemyTurret>() != null ||
-            current.GetComponent<DroneEnemy>() != null ||
-            current.GetComponent<PatrolTurret>() != null ||
-            current.CompareTag("Enemy"))
+        // 找到敌人根对象
+        GameObject enemy = null;
+        if (col.GetComponent<EnemyTurret>() != null) enemy = col.gameObject;
+        else if (col.GetComponent<DroneEnemy>() != null) enemy = col.gameObject;
+        else if (col.GetComponent<PatrolTurret>() != null) enemy = col.gameObject;
+        else if (col.CompareTag("Enemy")) enemy = col.gameObject;
+        else if (col.transform.parent != null)
         {
-            return current.gameObject;
+            Transform p = col.transform.parent;
+            if (p.GetComponent<EnemyTurret>() != null) enemy = p.gameObject;
+            else if (p.GetComponent<DroneEnemy>() != null) enemy = p.gameObject;
+            else if (p.GetComponent<PatrolTurret>() != null) enemy = p.gameObject;
+            else if (p.CompareTag("Enemy")) enemy = p.gameObject;
         }
 
-        if (current.parent != null)
+        if (enemy != null)
         {
-            if (current.parent.GetComponent<EnemyTurret>() != null ||
-                current.parent.GetComponent<DroneEnemy>() != null ||
-                current.parent.GetComponent<PatrolTurret>() != null ||
-                current.parent.CompareTag("Enemy"))
-            {
-                return current.parent.gameObject;
-            }
+            hasHit = true;
+            Debug.Log("[ReflectBullet] 摧毁敌人: " + enemy.name);
+            if (playerRef != null) playerRef.OnReflectHit();
+            Destroy(enemy);
+            Destroy(gameObject);
         }
-
-        EnemyTurret[] turrets = col.GetComponentsInChildren<EnemyTurret>();
-        if (turrets.Length > 0) return turrets[0].gameObject;
-
-        DroneEnemy[] drones = col.GetComponentsInChildren<DroneEnemy>();
-        if (drones.Length > 0) return drones[0].gameObject;
-
-        PatrolTurret[] patrols = col.GetComponentsInChildren<PatrolTurret>();
-        if (patrols.Length > 0) return patrols[0].gameObject;
-
-        return null;
     }
 
     void CheckAllEnemies()
     {
         EnemyTurret[] turrets = FindObjectsByType<EnemyTurret>();
-        foreach (EnemyTurret turret in turrets)
+        foreach (var t in turrets)
         {
-            if (turret == null) continue;
-            float dist = Vector3.Distance(transform.position, turret.transform.position);
-            if (dist < hitRadius)
+            if (t != null && Vector3.Distance(transform.position, t.transform.position) < hitRadius)
             {
-                DestroyEnemyObject(turret.gameObject);
+                hasHit = true;
+                if (playerRef != null) playerRef.OnReflectHit();
+                Destroy(t.gameObject);
+                Destroy(gameObject);
                 return;
             }
         }
-
         DroneEnemy[] drones = FindObjectsByType<DroneEnemy>();
-        foreach (DroneEnemy drone in drones)
+        foreach (var d in drones)
         {
-            if (drone == null) continue;
-            float dist = Vector3.Distance(transform.position, drone.transform.position);
-            if (dist < hitRadius)
+            if (d != null && Vector3.Distance(transform.position, d.transform.position) < hitRadius)
             {
-                DestroyEnemyObject(drone.gameObject);
+                hasHit = true;
+                if (playerRef != null) playerRef.OnReflectHit();
+                Destroy(d.gameObject);
+                Destroy(gameObject);
                 return;
             }
         }
-
         PatrolTurret[] patrols = FindObjectsByType<PatrolTurret>();
-        foreach (PatrolTurret patrol in patrols)
+        foreach (var p in patrols)
         {
-            if (patrol == null) continue;
-            float dist = Vector3.Distance(transform.position, patrol.transform.position);
-            if (dist < hitRadius)
+            if (p != null && Vector3.Distance(transform.position, p.transform.position) < hitRadius)
             {
-                DestroyEnemyObject(patrol.gameObject);
+                hasHit = true;
+                if (playerRef != null) playerRef.OnReflectHit();
+                Destroy(p.gameObject);
+                Destroy(gameObject);
                 return;
             }
         }
     }
 
-    void DestroyEnemy(Collider col)
-    {
-        GameObject enemyRoot = FindEnemyRoot(col);
-        if (enemyRoot != null)
-        {
-            DestroyEnemyObject(enemyRoot);
-        }
-    }
-
-    void DestroyEnemyObject(GameObject enemy)
-    {
-        Debug.Log($"[ReflectBullet] 击中敌人: {enemy.name}");
-
-        if (playerRef != null)
-            playerRef.OnReflectHit();
-
-        Destroy(enemy);
-        Destroy(gameObject);
-    }
-
-    // 只在 Scene 视图中显示（非运行模式）
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(0, 1, 1, 0.3f);

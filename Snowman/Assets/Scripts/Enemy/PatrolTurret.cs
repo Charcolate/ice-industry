@@ -164,7 +164,9 @@ public class PatrolTurret : MonoBehaviour
         EnemyBullet eb = bullet.GetComponent<EnemyBullet>();
         if (eb != null)
         {
-            eb.Initialize(targetPos, bulletSpeed);
+            eb.SetTarget(targetPos);
+eb.speed = bulletSpeed;
+
         }
     }
     
