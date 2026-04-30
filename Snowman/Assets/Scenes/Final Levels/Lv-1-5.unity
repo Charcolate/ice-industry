@@ -1018,10 +1018,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Exit Game
+  m_text: "\u79BB\u5F00\u6E38\u620F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1116,7 +1116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &431271006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1367,10 +1367,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart Level
+  m_text: "\u91CD\u542F\u5173\u5361"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1504,10 +1504,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Congratulations! You have completed the level!
+  m_text: "\u606D\u559C\uFF01"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1801,10 +1801,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Continue Level
+  m_text: "\u7EE7\u7EED\u6E38\u620F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2152,12 +2152,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Restart
-
-'
+  m_text: "\u91CD\u542F\u5173\u5361"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2272,11 +2270,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Press E to close valve
-
-
-
-'
+  m_text: "E\u952E\u5173\u6389\u6C34\u9600\n\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2658,10 +2652,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Level Complete!
+  m_text: "\u6210\u529F\u901A\u5173\uFF01"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2831,7 +2825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelCompleteUI
   restartButton: {fileID: 937270399}
-  nextLevelButton: {fileID: 431271005}
+  nextLevelButton: {fileID: 0}
 --- !u!1 &738099874
 GameObject:
   m_ObjectHideFlags: 0
@@ -3649,10 +3643,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Paused
+  m_text: "\u6682\u505C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
+  m_sharedMaterial: {fileID: 1390440089109245979, guid: 69ed152a2cf2dd54a83d972fd3625b3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10337,10 +10331,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaterFlow
   pushForce: 5
   flowDirection: {x: 0, y: 0, z: 1}
+  startState: 0
+  spawnDelay: 0
   waterRenderer: {fileID: 852645698}
   activeMaterial: {fileID: 2100000, guid: 31af4d324a2764f479b95b7ad2b833fc, type: 2}
   inactiveMaterial: {fileID: 2100000, guid: b5364b5d58aa6f24c8f0d95039304ebb, type: 2}
+  frozenMaterial: {fileID: 0}
   scrollSpeed: 1
+  frozenDuration: 5
   colliderSize: {x: 1, y: 1, z: 10.03}
   colliderCenter: {x: 0, y: 0.13, z: 0}
 --- !u!4 &2002057064

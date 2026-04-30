@@ -50,6 +50,8 @@ public class ReflectBullet : MonoBehaviour
 
         // 距离检测所有敌人（保底措施）
         CheckAllEnemies();
+        // 水流检测
+        CheckWaterFlows();
     }
 
     bool IsEnemy(Collider col)
@@ -136,6 +138,25 @@ public class ReflectBullet : MonoBehaviour
             }
         }
     }
+
+    void CheckWaterFlows()
+{
+    WaterFlow[] waterFlows = FindObjectsByType<WaterFlow>();
+    foreach (WaterFlow wf in waterFlows)
+    {
+        if (wf != null && !wf.IsFrozen && wf.IsActive)
+        {
+            float dist = Vector3.Distance(transform.position, wf.transform.position);
+            if (dist < hitRadius)
+            {
+                wf.Freeze();
+                Destroy(gameObject);
+                return;
+            }
+        }
+    }
+}
+
 
     void OnDrawGizmos()
     {
