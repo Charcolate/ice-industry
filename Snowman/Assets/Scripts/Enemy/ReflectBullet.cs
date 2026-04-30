@@ -48,10 +48,8 @@ public class ReflectBullet : MonoBehaviour
             }
         }
 
-        // 距离检测所有敌人（保底措施）
-        CheckAllEnemies();
-        // 水流检测
-        CheckWaterFlows();
+        // 距离检测所有敌人和水流
+        CheckAllTargets();
     }
 
     bool IsEnemy(Collider col)
@@ -60,7 +58,6 @@ public class ReflectBullet : MonoBehaviour
         if (col.GetComponent<DroneEnemy>() != null) return true;
         if (col.GetComponent<PatrolTurret>() != null) return true;
         if (col.CompareTag("Enemy")) return true;
-        // 检查父级
         if (col.transform.parent != null)
         {
             Transform p = col.transform.parent;
@@ -74,7 +71,6 @@ public class ReflectBullet : MonoBehaviour
 
     void DestroyEnemy(Collider col)
     {
-        // 找到敌人根对象
         GameObject enemy = null;
         if (col.GetComponent<EnemyTurret>() != null) enemy = col.gameObject;
         else if (col.GetComponent<DroneEnemy>() != null) enemy = col.gameObject;
@@ -99,8 +95,9 @@ public class ReflectBullet : MonoBehaviour
         }
     }
 
-    void CheckAllEnemies()
+    void CheckAllTargets()
     {
+        // 检测敌人
         EnemyTurret[] turrets = FindObjectsByType<EnemyTurret>();
         foreach (var t in turrets)
         {
@@ -113,6 +110,7 @@ public class ReflectBullet : MonoBehaviour
                 return;
             }
         }
+
         DroneEnemy[] drones = FindObjectsByType<DroneEnemy>();
         foreach (var d in drones)
         {
@@ -125,6 +123,7 @@ public class ReflectBullet : MonoBehaviour
                 return;
             }
         }
+
         PatrolTurret[] patrols = FindObjectsByType<PatrolTurret>();
         foreach (var p in patrols)
         {
@@ -137,26 +136,25 @@ public class ReflectBullet : MonoBehaviour
                 return;
             }
         }
-    }
 
-    void CheckWaterFlows()
-{
-    WaterFlow[] waterFlows = FindObjectsByType<WaterFlow>();
-    foreach (WaterFlow wf in waterFlows)
-    {
-        if (wf != null && !wf.IsFrozen && wf.IsActive)
+        // 检测水流
+        WaterFlow[] waterFlows = FindObjectsByType<WaterFlow>();
+        foreach (WaterFlow wf in waterFlows)
         {
-            float dist = Vector3.Distance(transform.position, wf.transform.position);
-            if (dist < hitRadius)
+            if (wf != null && !wf.IsFrozen && wf.IsActive)
             {
-                wf.Freeze();
-                Destroy(gameObject);
-                return;
+                float dist = Vector3.Distance(transform.position, wf.transform.position);
+                if (dist < hitRadius)
+                {
+                    hasHit = true;
+                    wf.Freeze();
+                    Debug.Log("[ReflectBullet] 冰冻水流: " + wf.name);
+                    Destroy(gameObject);
+                    return;
+                }
             }
         }
     }
-}
-
 
     void OnDrawGizmos()
     {

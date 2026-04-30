@@ -29,6 +29,9 @@ public class WaterFlow : MonoBehaviour
     [SerializeField] private Vector3 colliderSize = new Vector3(2f, 3f, 1f);
     [SerializeField] private Vector3 colliderCenter = new Vector3(0, 1.5f, 0);
 
+    [Header("冻结触发设置")]
+[SerializeField] private List<GameObject> freezeTriggerPrefabs = new List<GameObject>();  // 拖入能冻结水流的预制体
+
     private bool isActive = true;
     private bool isFrozen = false;
     private float frozenTimer = 0f;
@@ -189,28 +192,51 @@ public class WaterFlow : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other)
+{
+    if (!isActive || isFrozen) return;
+
+    // 不管三七二十一，只要碰到带 ReflectBullet 脚本的就冻结
+    Component[] components = other.GetComponents<Component>();
+    foreach (Component comp in components)
     {
-        if (!isActive || isFrozen) return;
-
-        if (other.CompareTag("Player"))
+        if (comp != null && comp.GetType().Name == "ReflectBullet")
         {
-            SnowmanController player = other.GetComponent<SnowmanController>();
-            CharacterController cc = other.GetComponent<CharacterController>();
-
-            if (player != null && player.CurrentForm == SnowmanController.SnowmanForm.Powder)
-            {
-                player.OnHitByWater();
-                if (cc != null && cc.enabled)
-                {
-                    Vector3 worldFlowDir = transform.TransformDirection(flowDirection);
-                    cc.Move(worldFlowDir * pushForce * 0.5f);
-                }
-            }
-
-            if (cc != null)
-                playersInWater.Add(cc);
+            Freeze();
+            Destroy(other.gameObject);
+            Debug.Log($"[WaterFlow] 被反击子弹击中，冻结！");
+            return;
         }
     }
+
+    // 玩家进入
+    if (other.CompareTag("Player"))
+    {
+        SnowmanController player = other.GetComponent<SnowmanController>();
+        CharacterController cc = other.GetComponent<CharacterController>();
+
+        if (player != null && player.CurrentForm == SnowmanController.SnowmanForm.Powder)
+        {
+            player.OnHitByWater();
+            if (cc != null && cc.enabled)
+            {
+                Vector3 worldFlowDir = transform.TransformDirection(flowDirection);
+                cc.Move(worldFlowDir * pushForce * 0.5f);
+            }
+        }
+
+        if (cc != null)
+            playersInWater.Add(cc);
+    }
+}
+
+bool ShouldFreeze(GameObject obj)
+{
+    // 直接检查名字
+    if (obj.name.ToLower().Contains("reflect") || obj.name.ToLower().Contains("bullet"))
+        return true;
+
+    return false;
+}
 
     void OnTriggerStay(Collider other)
     {
