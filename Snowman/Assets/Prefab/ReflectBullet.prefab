@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 9124234018537164868}
   m_Layer: 9
   m_Name: ReflectBullet
-  m_TagString: Untagged
+  m_TagString: ReflectBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

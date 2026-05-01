@@ -12,10 +12,38 @@ public class ReflectBullet : MonoBehaviour
     private bool hasHit = false;
 
     void Start()
+{
+    // Force tag assignment
+    gameObject.tag = "ReflectBullet";
+    
+    // Ensure there's a trigger collider
+    Collider col = GetComponent<Collider>();
+    if (col == null)
     {
-        Destroy(gameObject, lifetime);
-        lastPosition = transform.position;
+        SphereCollider sphereCol = gameObject.AddComponent<SphereCollider>();
+        sphereCol.isTrigger = true;
+        sphereCol.radius = 1f;
+        Debug.Log("[ReflectBullet] Added trigger collider");
     }
+    else
+    {
+        col.isTrigger = true;
+        Debug.Log("[ReflectBullet] Set existing collider to trigger");
+    }
+    
+    // Add Rigidbody if missing (required for trigger detection)
+    Rigidbody rb = GetComponent<Rigidbody>();
+    if (rb == null)
+    {
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
+        Debug.Log("[ReflectBullet] Added kinematic Rigidbody");
+    }
+    
+    Destroy(gameObject, lifetime);
+    lastPosition = transform.position;
+}
 
     public void SetDirection(Vector3 direction, float bulletSpeed, SnowmanController player)
     {
@@ -51,6 +79,23 @@ public class ReflectBullet : MonoBehaviour
         // 距离检测所有敌人和水流
         CheckAllTargets();
     }
+
+    // Add this method to ReflectBullet class
+void OnTriggerEnter(Collider other)
+{
+    if (hasHit) return;
+    
+    Debug.Log($"[ReflectBullet] Trigger with: {other.name}, Tag: {other.tag}");
+    
+    WaterFlow waterFlow = other.GetComponent<WaterFlow>();
+    if (waterFlow != null && !waterFlow.IsFrozen && waterFlow.IsActive)
+    {
+        hasHit = true;
+        waterFlow.Freeze();
+        Debug.Log("[ReflectBullet] Frozen water flow from bullet trigger!");
+        Destroy(gameObject);
+    }
+}
 
     bool IsEnemy(Collider col)
     {

@@ -7,12 +7,18 @@ public class WaterValve : MonoBehaviour
     [SerializeField] private float interactRange = 3f;
     [SerializeField] private float turnAnimationTime = 0.5f;
     
-    [Header("视觉")]
+    [Header("视觉 - 轮盘")]
     [SerializeField] private Transform valveWheel;
-    [SerializeField] private Renderer wheelRenderer;             // 直接引用轮盘 Renderer
-    [SerializeField] private Material wheelActiveMaterial;       // 开启时材质
-    [SerializeField] private Material wheelInactiveMaterial;     // 关闭时材质
+    [SerializeField] private Renderer wheelRenderer;
     [SerializeField] private float wheelRotationAmount = 720f;
+    
+    [Header("视觉 - 材质")]
+    [SerializeField] private Material activeMaterial;
+    [SerializeField] private Material inactiveMaterial;
+    
+    [Header("视觉 - 其他部件")]
+    [SerializeField] private Renderer bodyRenderer;
+    [SerializeField] private Renderer pipeRenderer;
     
     [Header("UI 提示")]
     [SerializeField] private GameObject interactPrompt;
@@ -37,8 +43,7 @@ public class WaterValve : MonoBehaviour
             interactPrompt.SetActive(false);
         }
         
-        // 初始状态：开启
-        UpdateWheelVisual();
+        UpdateAllVisuals();
     }
     
     void Update()
@@ -70,7 +75,7 @@ public class WaterValve : MonoBehaviour
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
         
-        // 旋转阀门轮盘
+        // 旋转动画
         if (valveWheel != null)
         {
             float elapsed = 0f;
@@ -94,23 +99,27 @@ public class WaterValve : MonoBehaviour
         // 切换状态
         isClosed = !isClosed;
         
-        // 更新轮盘材质
-        UpdateWheelVisual();
+        // 更新视觉
+        UpdateAllVisuals();
         
-        // 更新水流
+        // 反转每个水流的当前状态
         UpdateWaterFlows();
         
         isTurning = false;
-        
-        Debug.Log($"[WaterValve] 水阀已{(isClosed ? "关闭" : "开启")}");
     }
     
-    void UpdateWheelVisual()
+    void UpdateAllVisuals()
     {
-        if (wheelRenderer != null)
-        {
-            wheelRenderer.material = isClosed ? wheelInactiveMaterial : wheelActiveMaterial;
-        }
+        Material targetMaterial = isClosed ? inactiveMaterial : activeMaterial;
+        
+        if (wheelRenderer != null && targetMaterial != null)
+            wheelRenderer.material = targetMaterial;
+        
+        if (bodyRenderer != null && targetMaterial != null)
+            bodyRenderer.material = targetMaterial;
+        
+        if (pipeRenderer != null && targetMaterial != null)
+            pipeRenderer.material = targetMaterial;
     }
     
     void UpdateWaterFlows()
@@ -121,7 +130,8 @@ public class WaterValve : MonoBehaviour
         {
             if (flow != null)
             {
-                flow.SetWaterActive(!isClosed);
+                // 反转每个水流的当前状态
+                flow.SetWaterActive(!flow.IsActive);
             }
         }
     }

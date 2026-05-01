@@ -46,41 +46,50 @@ public class WaterFlow : MonoBehaviour
     public bool IsActive => isActive;
 
     void Start()
+{
+    keyboard = Keyboard.current;
+
+    if (waterRenderer == null)
+        waterRenderer = GetComponent<Renderer>();
+
+    // Make sure the main object has a Rigidbody
+    Rigidbody rb = GetComponent<Rigidbody>();
+    if (rb == null)
     {
-        keyboard = Keyboard.current;
-
-        if (waterRenderer == null)
-            waterRenderer = GetComponent<Renderer>();
-
-        // 水流触发器
-        waterCollider = GetComponent<BoxCollider>();
-        if (waterCollider == null)
-        {
-            waterCollider = gameObject.AddComponent<BoxCollider>();
-        }
-        waterCollider.isTrigger = true;
-        waterCollider.size = colliderSize;
-        waterCollider.center = colliderCenter;
-
-        // 冰冻实体碰撞体
-        GameObject solidObj = new GameObject("SolidCollider");
-        solidObj.transform.SetParent(transform);
-        solidObj.transform.localPosition = colliderCenter;
-        solidObj.transform.localRotation = Quaternion.identity;
-        solidObj.layer = gameObject.layer;
-        solidCollider = solidObj.AddComponent<BoxCollider>();
-        solidCollider.size = colliderSize;
-        solidCollider.isTrigger = false;
-        solidCollider.enabled = false;
-
-        // 初始隐藏
-        if (waterRenderer != null)
-            waterRenderer.enabled = false;
-        waterCollider.enabled = false;
-        solidCollider.enabled = false;
-
-        StartCoroutine(SpawnRoutine());
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false;
     }
+
+    // Water trigger collider
+    waterCollider = GetComponent<BoxCollider>();
+    if (waterCollider == null)
+    {
+        waterCollider = gameObject.AddComponent<BoxCollider>();
+    }
+    waterCollider.isTrigger = true;
+    waterCollider.size = colliderSize;
+    waterCollider.center = colliderCenter;
+    waterCollider.name = "WaterTrigger";
+
+    // Solid platform collider (for frozen state)
+    // Add it as second collider on the same GameObject
+    solidCollider = gameObject.AddComponent<BoxCollider>();
+    solidCollider.size = colliderSize;
+    solidCollider.center = colliderCenter;
+    solidCollider.isTrigger = false; // This is the solid one!
+    solidCollider.enabled = false;
+    solidCollider.name = "FrozenSolid";
+
+    // Initially hide
+    if (waterRenderer != null)
+        waterRenderer.enabled = false;
+    waterCollider.enabled = false;
+
+    Debug.Log($"[WaterFlow] Setup complete - Has Rigidbody: {GetComponent<Rigidbody>() != null}");
+    
+    StartCoroutine(SpawnRoutine());
+}
 
     IEnumerator SpawnRoutine()
     {
@@ -146,33 +155,41 @@ public class WaterFlow : MonoBehaviour
     }
 
     public void Freeze()
+{
+    if (!isActive || isFrozen) 
     {
-        if (!isActive || isFrozen) return;
-        isFrozen = true;
-        frozenTimer = frozenDuration;
-
-        if (waterRenderer != null && frozenMaterial != null)
-            waterRenderer.material = frozenMaterial;
-
-        waterCollider.enabled = false;
-        solidCollider.enabled = true;
-        playersInWater.Clear();
-
-        Debug.Log($"[WaterFlow] 被冰冻！持续 {frozenDuration} 秒");
+        Debug.Log($"[WaterFlow] Can't freeze - isActive: {isActive}, isFrozen: {isFrozen}");
+        return;
     }
+    
+    isFrozen = true;
+    frozenTimer = frozenDuration;
+
+    if (waterRenderer != null && frozenMaterial != null)
+        waterRenderer.material = frozenMaterial;
+
+    // Switch colliders
+    waterCollider.enabled = false;    // Disable water trigger
+    solidCollider.enabled = true;     // Enable solid platform
+    
+    // Clear any players that were in the water
+    playersInWater.Clear();
+
+    Debug.Log($"[WaterFlow] FROZEN! Solid collider enabled: {solidCollider.enabled}, Size: {solidCollider.size}, Center: {solidCollider.center}");
+}
 
     void Unfreeze()
-    {
-        isFrozen = false;
+{
+    isFrozen = false;
 
-        if (waterRenderer != null)
-            waterRenderer.material = isActive ? activeMaterial : inactiveMaterial;
+    if (waterRenderer != null)
+        waterRenderer.material = isActive ? activeMaterial : inactiveMaterial;
 
-        waterCollider.enabled = isActive;
-        solidCollider.enabled = false;
+    waterCollider.enabled = isActive;
+    solidCollider.enabled = false;
 
-        Debug.Log("[WaterFlow] 冰冻解除");
-    }
+    Debug.Log("[WaterFlow] 冰冻解除 - Solid collider disabled");
+}
 
     public void SetWaterActive(bool active)
     {
@@ -191,24 +208,25 @@ public class WaterFlow : MonoBehaviour
         Debug.Log($"[WaterFlow] 水流: {(active ? "开启" : "关闭")}");
     }
 
-    void OnTriggerEnter(Collider other)
+   void OnTriggerEnter(Collider other)
 {
     if (!isActive || isFrozen) return;
 
-    // 不管三七二十一，只要碰到带 ReflectBullet 脚本的就冻结
-    Component[] components = other.GetComponents<Component>();
-    foreach (Component comp in components)
+    Debug.Log($"[WaterFlow] Something entered: {other.name}, Tag: {other.tag}");
+    
+    // Check for ReflectBullet
+    if (other.CompareTag("ReflectBullet") || other.name.Contains("ReflectBullet") || other.GetComponent<ReflectBullet>() != null)
     {
-        if (comp != null && comp.GetType().Name == "ReflectBullet")
-        {
-            Freeze();
+        Debug.Log("[WaterFlow] ReflectBullet detected! Freezing...");
+        Freeze();
+        
+        // Try to destroy the bullet
+        if (other.gameObject != null)
             Destroy(other.gameObject);
-            Debug.Log($"[WaterFlow] 被反击子弹击中，冻结！");
-            return;
-        }
+        return;
     }
 
-    // 玩家进入
+    // Player enters
     if (other.CompareTag("Player"))
     {
         SnowmanController player = other.GetComponent<SnowmanController>();
@@ -220,7 +238,7 @@ public class WaterFlow : MonoBehaviour
             if (cc != null && cc.enabled)
             {
                 Vector3 worldFlowDir = transform.TransformDirection(flowDirection);
-                cc.Move(worldFlowDir * pushForce * 0.5f);
+                cc.Move(worldFlowDir * pushForce * 0.01f);
             }
         }
 
