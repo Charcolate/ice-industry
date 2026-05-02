@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DroneEnemy
   moveSpeed: 3
-  hoverHeight: 1
+  hoverHeight: 0.5
   stopDistance: 2.5
   bulletPrefab: {fileID: 2342844184719778591, guid: 007c3580e80451647aa012fb12a5c194, type: 3}
   firePoint: {fileID: 5263323357061512429}

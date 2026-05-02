@@ -2775,12 +2775,15 @@ MonoBehaviour:
   turnAnimationTime: 0.5
   valveWheel: {fileID: 911331296}
   wheelRenderer: {fileID: 911331298}
-  wheelActiveMaterial: {fileID: 2100000, guid: 03b180e3c3e1b2d44a9285ea1f0b1278, type: 2}
-  wheelInactiveMaterial: {fileID: 2100000, guid: a91d95c283851354bad8657dfa92b4df, type: 2}
   wheelRotationAmount: 720
+  activeMaterial: {fileID: 2100000, guid: 03b180e3c3e1b2d44a9285ea1f0b1278, type: 2}
+  inactiveMaterial: {fileID: 2100000, guid: a91d95c283851354bad8657dfa92b4df, type: 2}
+  bodyRenderer: {fileID: 0}
+  pipeRenderer: {fileID: 0}
   interactPrompt: {fileID: 598647038}
   waterFlows:
   - {fileID: 508864161}
+  - {fileID: 1169080512}
 --- !u!4 &527886155
 Transform:
   m_ObjectHideFlags: 0
@@ -7219,7 +7222,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -14174,7 +14177,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1681335495201156359, guid: ba4f61aa6a74d9d4382332917a57ed99, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.77
+      value: 19.26
       objectReference: {fileID: 0}
     - target: {fileID: 1681335495201156359, guid: ba4f61aa6a74d9d4382332917a57ed99, type: 3}
       propertyPath: m_LocalPosition.y
@@ -14182,7 +14185,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1681335495201156359, guid: ba4f61aa6a74d9d4382332917a57ed99, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -31.66
+      value: -32.17
       objectReference: {fileID: 0}
     - target: {fileID: 1681335495201156359, guid: ba4f61aa6a74d9d4382332917a57ed99, type: 3}
       propertyPath: m_LocalRotation.w
